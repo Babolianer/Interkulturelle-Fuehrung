@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(uuid())
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  age          Int
+  courseNumber String   @map("course_number")
+  email        String   @unique
+  password     String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  surveys Survey[]
+
+  @@map("users")
+}
+
+model Survey {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers SurveyAnswer[]
+
+  @@index([userId])
+  @@map("surveys")
+}
+
+model Question {
+  id               String   @id @default(uuid())
+  dimensionName    String   @map("dimension_name")
+  text             String
+  criterion        String?  @map("criterion")
+  weakExpression   String?  @map("weak_expression")
+  strongExpression String?  @map("strong_expression")
+  referenceValue   Int?     @map("reference_value")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  answers SurveyAnswer[]
+
+  @@index([dimensionName])
+  @@map("questions")
+}
+
+model SurveyAnswer {
+  id               String @id @default(uuid())
+  surveyId         String @map("survey_id")
+  questionId       String @map("question_id")
+  value            Int    // ICH 0-100
+  valueDurchschnitt Int?  @map("value_durchschnitt") // DURCHSCHNITT 0-100
+
+  survey   Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([surveyId, questionId])
+  @@index([surveyId])
+  @@index([questionId])
+  @@map("survey_answers")
+}
