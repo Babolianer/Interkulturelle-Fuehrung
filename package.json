@@ -1,0 +1,16 @@
+{
+  "name": "interkulturelle-fuehrung",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "prisma generate --schema=backend/prisma/schema.prisma && cd frontend && npm ci && npm run build"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  }
+}
