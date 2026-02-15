@@ -20,4 +20,4 @@ Das Projekt ist so eingerichtet, dass **Frontend und API** gemeinsam auf Vercel 
   - `prisma generate` (Schema: `backend/prisma/schema.prisma`)
   - `cd frontend && npm ci && npm run build` – baut das Frontend.
 
-Die API-Routen liegen unter `api/` und werden von Vercel automatisch unter `/api/*` bereitgestellt.
+Die API wird über **eine** Serverless Function bereitgestellt: `api/[[...path]].js` (Catch-All). Sie leitet alle Anfragen an die Express-App in `backend/src/app.js` weiter. So bleibt das Projekt unter dem Hobby-Plan-Limit (max. 12 Functions).
